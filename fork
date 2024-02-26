@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+int main() {
+    pid_t pid;
+
+    printf("Parent process is starting...\n");
+
+    
+    pid = fork();
+
+    if (pid < 0) {
+       
+        fprintf(stderr, "Fork failed\n");
+        return 1;
+    } else if (pid == 0) {
+        
+        printf("Child process executing...\n");
+        
+        char *args[] = {"ls", "-l", NULL};
+        execvp(args[0], args);
+
+        
+        fprintf(stderr, "Exec failed\n");
+        return 1;
+    } else {
+        
+        printf("Parent process waiting for child...\n");
+        
+        wait(NULL);
+
+        printf("Child process finished. Parent exiting...\n");
+    }
+
+    return 0;
+}
